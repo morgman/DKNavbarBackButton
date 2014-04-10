@@ -44,7 +44,12 @@
 }
 
 - (void)startUp{
-    _btn = [DKBackButton buttonWithType:UIButtonTypeSystem];
+    
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+        _btn = [[DKBackButton alloc] init];
+    } else {
+        _btn = [DKBackButton buttonWithType:UIButtonTypeSystem];
+    }
     if (self.title) {
         [_btn setTitle:self.title forState:UIControlStateNormal];
     }
@@ -57,11 +62,24 @@
     [label setText:_btn.titleLabel.text];
     [label sizeToFit];
     
-    [_btn setImage:[[UIImage imageNamed:@"back_indicator_image"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+    if ([[UIImage class] respondsToSelector:@selector(imageWithRenderingMode:)]) {
+        [_btn setImage:[[UIImage imageNamed:@"back_indicator_image"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+    } else {
+        [_btn setImage:[UIImage imageNamed:@"back_indicator_image_white"] forState:UIControlStateNormal];
+    }
     
     [_btn setFrame:CGRectMake(0, 0, label.frame.size.width+22+_btn.imageView.frame.size.width , 44)];
-    [_btn makeOffset];
-       
+    
+    if ([_btn respondsToSelector:@selector(makeOffset)]) {
+        [((DKBackButton *)_btn) makeOffset];
+    } else {
+        [_btn setClipsToBounds:NO];
+        [_btn setImageEdgeInsets:UIEdgeInsetsMake(0, - 15, 0, 0)];
+        [_btn setTitleEdgeInsets:UIEdgeInsetsMake(0, _btn.imageEdgeInsets.left+15, 0, 0)];
+        
+        [_btn.titleLabel setFont:[UIFont systemFontOfSize:17.0f]];
+    }
+    
     [self setCustomView:_btn];
 }
 
@@ -87,7 +105,15 @@
     [label sizeToFit];
     
     [_btn setFrame:CGRectMake(0, 0, label.frame.size.width+22+_btn.imageView.frame.size.width , 44)];
-    [_btn setterOffset];
+    if ([_btn respondsToSelector:@selector(setterOffset)]) {
+        [_btn setterOffset];
+    } else {
+        [_btn setClipsToBounds:NO];
+        [_btn setImageEdgeInsets:UIEdgeInsetsMake(0, - 25, 0, 0)];
+        [_btn setTitleEdgeInsets:UIEdgeInsetsMake(0, _btn.imageEdgeInsets.left+15, 0, 0)];
+        
+        [_btn.titleLabel setFont:[UIFont systemFontOfSize:17.0f]];
+    }
 }
 
 - (void)setImage:(UIImage *)image{
@@ -99,7 +125,15 @@
     _btn = (DKBackButton *)self.customView;
     [_btn setImage:[[UIImage imageNamed:@"back_indicator_image"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
     [_btn setFrame:CGRectMake(0, 0, label.frame.size.width+22+_btn.imageView.frame.size.width, 44)];
-    [_btn setterOffset];
+    if ([_btn respondsToSelector:@selector(setterOffset)]) {
+        [_btn setterOffset];
+    } else {
+        [_btn setClipsToBounds:NO];
+        [_btn setImageEdgeInsets:UIEdgeInsetsMake(0, - 25, 0, 0)];
+        [_btn setTitleEdgeInsets:UIEdgeInsetsMake(0, _btn.imageEdgeInsets.left+15, 0, 0)];
+        
+        [_btn.titleLabel setFont:[UIFont systemFontOfSize:17.0f]];
+    }
 }
 
 
