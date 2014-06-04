@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
       :tag => s.version.to_s
     }
         
-  s.ios.deployment_target = '7.0'
+  s.ios.deployment_target = '6.0'
   s.requires_arc = true  
   s.default_subspec = 'core'
 
